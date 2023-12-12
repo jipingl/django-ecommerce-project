@@ -25,14 +25,15 @@
                             <div class="col-6">
                                 <label for="select">Qty</label>
                                 <select id="select">
-                                    <option value="">1</option>
-                                    <option value="">2</option>
-                                    <option value="">3</option>
-                                    <option value="">4</option>
+                                    {% for i in product_select_list %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-secondary btn-sm">Add to basket</button>
+                                <button type="button" id="add-button" class="btn btn-secondary btn-sm"
+                                        value="{{ product.id }}">Add to basket
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -42,4 +43,28 @@
     </main>
 
 </div>
+
+<script>
+    $('#add-button').on('click', function (e) {
+        e.preventDefault();
+        let product_id = $('#add-button').val();
+        let product_qty = $('#select').val();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'basket:basket_add' %}",
+            data: {
+                product_id: product_id,
+                product_qty: product_qty,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function (response) {
+                $('#basket-qty').html(response['basket_qty'])
+            },
+            error: function (xhr, errmsg, err) {
+
+            }
+        })
+    })
+</script>
 {% endblock %}
