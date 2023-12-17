@@ -70,3 +70,7 @@ class Basket:
         Save the basket session
         """
         self.session.modified = True
+
+    def clear(self):
+        del self.session['basket']
+        self.save()
